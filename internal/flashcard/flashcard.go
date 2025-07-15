@@ -51,15 +51,15 @@ func (s *FlashcardSession) Run() error {
 		// Front of card
 		fmt.Printf("\n🔷 Word: %s\nPart of Speech: %s\n", word, entry.PartOfSpeech)
 		fmt.Print("Press [Enter] to flip the card...")
-		reader.ReadString("\n")
+		reader.ReadString('\n')
 
 		// Back of the card
 		fmt.Printf("\n📖 Definition: %s\n", entry.Definition)
 		fmt.Printf("💬 Example: %s\n", entry.ExampleSentence)
 		fmt.Print("Did you know this word? [y]es / [n]o / [q]uit: ")
 
-		input, _ := reader.ReadString("\n")
-		input = strings.TripSpace(strings.ToLower(input))
+		input, _ := reader.ReadString('\n')
+		input = strings.TrimSpace(strings.ToLower(input))
 
 		switch input {
 		case "y":
@@ -68,6 +68,7 @@ func (s *FlashcardSession) Run() error {
 			s.Progress[word] = "unknown"
 		case "q":
 			fmt.Println("👋 Exiting session. Your progress has been saved.")
+			return nil
 		default:
 			fmt.Println("‼️ Invalid input. Skipping word.")
 		}
