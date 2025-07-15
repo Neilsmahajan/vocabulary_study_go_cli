@@ -13,6 +13,9 @@ func Run() error {
 	if len(os.Args) > 1 && strings.ToLower(os.Args[1]) == "stats" {
 		return showStats()
 	}
+	if len(os.Args) > 1 && strings.ToLower(os.Args[1]) == "reset" {
+		return resetProgress()
+	}
 	const vocabPath = "vocab.json"
 	const progressPath = "progress.json"
 
@@ -71,5 +74,24 @@ func showStats() error {
 	fmt.Printf("Known: %d\n", known)
 	fmt.Printf("Unknown: %d\n", unknown)
 	fmt.Printf("Unseen: %d\n", unseen)
+	return nil
+}
+
+func resetProgress() error {
+	const progressPath = "progress.json"
+
+	fmt.Print("⚠️ Are you sure you want to reset your progress? [y/N]: ")
+	var response string
+	fmt.Scanln(&response)
+
+	if strings.ToLower(response) != "y" {
+		fmt.Println("❎ Reset cancelled.")
+		return nil
+	}
+	err := storage.SaveProgress(progressPath, map[string]string{})
+	if err != nil {
+		return fmt.Errorf("failed to reset progress: %w", err)
+	}
+	fmt.Println("✅ Progress has been reset.")
 	return nil
 }
