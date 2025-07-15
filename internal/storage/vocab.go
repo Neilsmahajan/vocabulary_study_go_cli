@@ -10,7 +10,7 @@ import (
 type VocabEntry struct {
 	PartOfSpeech    string `json:"part_of_speech"`
 	Definition      string `json:"definition"`
-	ExampleSentence string `json:"sentence"`
+	ExampleSentence string `json:"example_sentence"`
 }
 
 func LoadVocab(path string) (map[string]VocabEntry, error) {
