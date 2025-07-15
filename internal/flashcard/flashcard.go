@@ -50,9 +50,13 @@ func (s *FlashcardSession) Run() error {
 
 		// Front of card
 		fmt.Printf("\n🔷 Word: %s\nPart of Speech: %s\n", word, entry.PartOfSpeech)
-		fmt.Print("Press [Enter] to flip the card...")
-		reader.ReadString('\n')
-
+		fmt.Print("Press [q]uit to exit or [Enter] to flip the card...")
+		flipInput, _ := reader.ReadString('\n')
+		flipInput = strings.TrimSpace(strings.ToLower(flipInput))
+		if flipInput == "q" {
+			fmt.Println("👋 Exiting session. Your progress has been saved.")
+			return nil
+		}
 		// Back of the card
 		fmt.Printf("\n📖 Definition: %s\n", entry.Definition)
 		fmt.Printf("💬 Example: %s\n", entry.ExampleSentence)
