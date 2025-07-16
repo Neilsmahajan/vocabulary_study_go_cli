@@ -14,12 +14,14 @@ import (
 type FlashcardSession struct {
 	Vocab    map[string]storage.VocabEntry
 	Progress map[string]string
+	Limit    int
 }
 
-func NewSession(vocab map[string]storage.VocabEntry, progress map[string]string) *FlashcardSession {
+func NewSession(vocab map[string]storage.VocabEntry, progress map[string]string, limit int) *FlashcardSession {
 	return &FlashcardSession{
 		Vocab:    vocab,
 		Progress: progress,
+		Limit:    limit,
 	}
 }
 
@@ -30,6 +32,9 @@ func (s *FlashcardSession) Run() error {
 		status := s.Progress[word]
 		if status != "known" {
 			words = append(words, word)
+		}
+		if s.Limit > 0 && len(words) >= s.Limit {
+			break
 		}
 	}
 

@@ -41,6 +41,16 @@ To start a flashcard session, simply run the executable:
 
 The application will display a word, and you can press `Enter` to reveal the definition. Then, you'll be prompted to mark the word as "known" or "unknown".
 
+### Limit the Number of Words
+
+You can limit the number of words in a study session using the `--limit` flag:
+
+```bash
+./vocab-cli --limit=10
+```
+
+This will start a session with a maximum of 10 words.
+
 ### View Statistics
 
 To see your current progress, use the `stats` command:

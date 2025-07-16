@@ -1,6 +1,7 @@
 package cli
 
 import (
+	"flag"
 	"fmt"
 	"os"
 	"strings"
@@ -10,12 +11,21 @@ import (
 )
 
 func Run() error {
-	if len(os.Args) > 1 && strings.ToLower(os.Args[1]) == "stats" {
-		return showStats()
+	// Handle subcommands
+	if len(os.Args) > 1 {
+		arg := os.Args[1]
+		switch strings.ToLower(arg) {
+		case "stats":
+			return showStats()
+		case "reset":
+			return resetProgress()
+		}
 	}
-	if len(os.Args) > 1 && strings.ToLower(os.Args[1]) == "reset" {
-		return resetProgress()
-	}
+
+	// Flag parsing
+	limit := flag.Int("limit", 0, "Maximum number of words to review in this session")
+	flag.Parse()
+
 	const vocabPath = "vocab.json"
 	const progressPath = "progress.json"
 
@@ -30,7 +40,7 @@ func Run() error {
 	}
 
 	// Start flashcard session
-	session := flashcard.NewSession(vocab, progress)
+	session := flashcard.NewSession(vocab, progress, *limit)
 	if err := session.Run(); err != nil {
 		return fmt.Errorf("error running flashcard session: %w", err)
 	}
@@ -39,7 +49,7 @@ func Run() error {
 	if err := storage.SaveProgress(progressPath, progress); err != nil {
 		return fmt.Errorf("error saving progress: %w", err)
 	}
-	return nil
+	return storage.SaveProgress(progressPath, session.Progress)
 }
 
 func showStats() error {
