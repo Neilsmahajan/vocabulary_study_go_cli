@@ -23,8 +23,10 @@ A command-line interface (CLI) tool built with Go to help you study and learn ne
     cd vocabulary_study_go_cli
     ```
 4.  **Build the application**:
+
+    Run the following command to build the executable file `vocab-cli`:
     ```bash
-    go build -o vocab-cli ./cmd/main.go
+    make build
     ```
 
 ## Usage
