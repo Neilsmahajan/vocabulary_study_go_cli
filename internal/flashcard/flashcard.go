@@ -15,13 +15,15 @@ type FlashcardSession struct {
 	Vocab    map[string]storage.VocabEntry
 	Progress map[string]string
 	Limit    int
+	Review   string // "unknown", "unseen", "all"
 }
 
-func NewSession(vocab map[string]storage.VocabEntry, progress map[string]string, limit int) *FlashcardSession {
+func NewSession(vocab map[string]storage.VocabEntry, progress map[string]string, limit int, review string) *FlashcardSession {
 	return &FlashcardSession{
 		Vocab:    vocab,
 		Progress: progress,
 		Limit:    limit,
+		Review:   review,
 	}
 }
 
@@ -30,8 +32,23 @@ func (s *FlashcardSession) Run() error {
 	words := []string{}
 	for word := range s.Vocab {
 		status := s.Progress[word]
-		if status != "known" {
-			words = append(words, word)
+		switch s.Review {
+		case "unknown":
+			if status == "unknown" {
+				words = append(words, word)
+			}
+		case "unseen":
+			if status == "" {
+				words = append(words, word)
+			}
+		case "all":
+			if status != "known" {
+				words = append(words, word)
+			}
+		default:
+			if status != "known" {
+				words = append(words, word)
+			}
 		}
 		if s.Limit > 0 && len(words) >= s.Limit {
 			break

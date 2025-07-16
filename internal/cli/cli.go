@@ -12,19 +12,37 @@ import (
 
 func Run() error {
 	// Handle subcommands
-	if len(os.Args) > 1 {
+	if len(os.Args) > 1 && !strings.HasPrefix(os.Args[1], "-") {
 		arg := os.Args[1]
 		switch strings.ToLower(arg) {
 		case "stats":
 			return showStats()
 		case "reset":
 			return resetProgress()
+		case "help":
+			printUsage()
+			return nil
 		}
 	}
 
 	// Flag parsing
-	limit := flag.Int("limit", 0, "Maximum number of words to review in this session")
+	limit := flag.Int("limit", 0, "Maximum number of flashcards in the session")
+	review := flag.String("review", "all", "Choose which words to review: all, unknown, unseen")
+	help := flag.Bool("help", false, "Show help message")
+	flag.Usage = printUsage
 	flag.Parse()
+
+	if *help {
+		printUsage()
+		return nil
+	}
+
+	// Validate review mode
+	if *review != "all" && *review != "unknown" && *review != "unseen" {
+		fmt.Println("❌ Invalid value for --review. Use: all, unknown, or unseen")
+		printUsage()
+		return nil
+	}
 
 	const vocabPath = "vocab.json"
 	const progressPath = "progress.json"
@@ -40,15 +58,11 @@ func Run() error {
 	}
 
 	// Start flashcard session
-	session := flashcard.NewSession(vocab, progress, *limit)
+	session := flashcard.NewSession(vocab, progress, *limit, *review)
 	if err := session.Run(); err != nil {
 		return fmt.Errorf("error running flashcard session: %w", err)
 	}
 
-	// Save progress
-	if err := storage.SaveProgress(progressPath, progress); err != nil {
-		return fmt.Errorf("error saving progress: %w", err)
-	}
 	return storage.SaveProgress(progressPath, session.Progress)
 }
 
@@ -104,4 +118,25 @@ func resetProgress() error {
 	}
 	fmt.Println("✅ Progress has been reset.")
 	return nil
+}
+
+func printUsage() {
+	fmt.Println(`
+📚 Vocabulary Study CLI
+
+Usage:
+  vocab [flags]
+  vocab stats         Show study statistics
+  vocab reset         Reset all progress
+  vocab help          Show this help message
+
+Flags:
+  --limit N           Limit number of flashcards shown in one session
+  --review MODE       Filter words to review: all, unknown, unseen (default: all)
+  --help              Show this help message
+
+Examples:
+  vocab --limit 20
+  vocab --review=unknown
+  vocab stats`)
 }

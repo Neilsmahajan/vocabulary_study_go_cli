@@ -51,6 +51,24 @@ You can limit the number of words in a study session using the `--limit` flag:
 
 This will start a session with a maximum of 10 words.
 
+### Filter Words to Review
+
+You can filter the words in a study session based on their status using the `--review` flag. The available modes are `all`, `unknown`, and `unseen`.
+
+```bash
+./vocab-cli --review=unknown
+```
+
+This will start a session with only the words you have previously marked as "unknown".
+
+### Show Help Message
+
+To see the help message with all available commands and flags, use the `--help` flag:
+
+```bash
+./vocab-cli --help
+```
+
 ### View Statistics
 
 To see your current progress, use the `stats` command:
