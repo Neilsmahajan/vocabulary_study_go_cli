@@ -98,6 +98,9 @@ func showStats() error {
 	fmt.Printf("Known: %d\n", known)
 	fmt.Printf("Unknown: %d\n", unknown)
 	fmt.Printf("Unseen: %d\n", unseen)
+	if total == 0 {
+		fmt.Println("No words in vocabulary.")
+	}
 	return nil
 }
 
