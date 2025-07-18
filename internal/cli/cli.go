@@ -22,6 +22,10 @@ func Run() error {
 		case "help":
 			printUsage()
 			return nil
+		default:
+			fmt.Printf("❌ Unknown command: %s\n", arg)
+			fmt.Println("Use 'vocab help' to see available commands.")
+			return nil
 		}
 	}
 
