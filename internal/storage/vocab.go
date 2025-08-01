@@ -22,11 +22,11 @@ func LoadVocab(path string) (map[string]VocabEntry, error) {
 
 	bytes, err := io.ReadAll(file)
 	if err != nil {
-		return nil, fmt.Errorf("Failed to read vocab file %w", err)
+		return nil, fmt.Errorf("failed to read vocab file %w", err)
 	}
 	var vocab map[string]VocabEntry
 	if err := json.Unmarshal(bytes, &vocab); err != nil {
-		return nil, fmt.Errorf("Failed to parse vocab JSON: %w", err)
+		return nil, fmt.Errorf("failed to parse vocab json: %w", err)
 	}
 	return vocab, nil
 }
