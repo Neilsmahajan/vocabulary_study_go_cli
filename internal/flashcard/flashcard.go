@@ -56,8 +56,8 @@ func (s *FlashcardSession) Run() error {
 	}
 
 	// Shuffle words
-	rand.Seed(time.Now().UnixNano())
-	rand.Shuffle(len(words), func(i, j int) {
+	rng := rand.New(rand.NewSource(time.Now().UnixNano()))
+	rng.Shuffle(len(words), func(i, j int) {
 		words[i], words[j] = words[j], words[i]
 	})
 

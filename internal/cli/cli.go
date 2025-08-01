@@ -113,7 +113,10 @@ func resetProgress() error {
 
 	fmt.Print("⚠️ Are you sure you want to reset your progress? [y/N]: ")
 	var response string
-	fmt.Scanln(&response)
+	if _, err := fmt.Scanln(&response); err != nil {
+		// Handle empty input or scan errors gracefully
+		response = "n"
+	}
 
 	if strings.ToLower(response) != "y" {
 		fmt.Println("❎ Reset cancelled.")

@@ -3,7 +3,7 @@ package storage
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"os"
 )
 
@@ -20,7 +20,7 @@ func LoadVocab(path string) (map[string]VocabEntry, error) {
 	}
 	defer file.Close()
 
-	bytes, err := ioutil.ReadAll(file)
+	bytes, err := io.ReadAll(file)
 	if err != nil {
 		return nil, fmt.Errorf("Failed to read vocab file %w", err)
 	}

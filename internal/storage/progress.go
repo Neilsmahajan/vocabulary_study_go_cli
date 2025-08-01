@@ -3,7 +3,6 @@ package storage
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"os"
 )
 
@@ -16,7 +15,7 @@ func LoadProgress(path string) (map[string]string, error) {
 	}
 
 	// Read the file
-	bytes, err := ioutil.ReadFile(path)
+	bytes, err := os.ReadFile(path)
 	if err != nil {
 		return nil, fmt.Errorf("failed to read progress file: %w", err)
 	}
@@ -33,7 +32,7 @@ func SaveProgress(path string, progress map[string]string) error {
 		return fmt.Errorf("failed to encode progress to JSON: %w", err)
 	}
 
-	if err := ioutil.WriteFile(path, bytes, 0644); err != nil {
+	if err := os.WriteFile(path, bytes, 0644); err != nil {
 		return fmt.Errorf("failed to write progress file: %w", err)
 	}
 	return nil
