@@ -119,7 +119,7 @@ func resetProgress() error {
 	}
 
 	if strings.ToLower(response) != "y" {
-		fmt.Println("❎ Reset cancelled.")
+		fmt.Println("❎ Reset canceled.")
 		return nil
 	}
 	err := storage.SaveProgress(progressPath, map[string]string{})

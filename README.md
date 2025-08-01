@@ -1,5 +1,8 @@
 # Vocabulary Study GO CLI
 
+[![Lint](https://github.com/Neilsmahajan/vocabulary_study_go_cli/workflows/Lint/badge.svg)](https://github.com/Neilsmahajan/vocabulary_study_go_cli/actions/workflows/lint.yml)
+[![CI](https://github.com/Neilsmahajan/vocabulary_study_go_cli/workflows/CI/badge.svg)](https://github.com/Neilsmahajan/vocabulary_study_go_cli/actions/workflows/ci.yml)
+
 A command-line interface (CLI) tool built with Go to help you study and learn new vocabulary through interactive flashcard sessions.
 
 ## Features
@@ -25,6 +28,7 @@ A command-line interface (CLI) tool built with Go to help you study and learn ne
 4.  **Build the application**:
 
     Run the following command to build the executable file `vocab-cli`:
+
     ```bash
     make build
     ```
