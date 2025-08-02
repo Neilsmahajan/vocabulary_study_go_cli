@@ -23,14 +23,7 @@ func Run() error {
 			printUsage()
 			return nil
 		case "add":
-			if len(os.Args) != 5 {
-				fmt.Println("❌ Usage: vocab add --word=<word> --pos=<part-of-speech> --definition=\"<definition>\"")
-				fmt.Println("Example: vocab add --word=serendipity --pos=noun --definition=\"the occurrence of events by chance in a happy or beneficial way\"")
-				fmt.Println("Use 'vocab help' to see available commands.")
-				return nil
-			}
-			fmt.Println("correct usage test")
-			return nil
+			return handleAddCommand()
 		default:
 			fmt.Printf("❌ Unknown command: %s\n", arg)
 			fmt.Println("Use 'vocab help' to see available commands.")
@@ -139,6 +132,43 @@ func resetProgress() error {
 	return nil
 }
 
+func handleAddCommand() error {
+	// Create a new flag set for the add subcommand
+	addCmd := flag.NewFlagSet("add", flag.ExitOnError)
+
+	wordFlag := addCmd.String("word", "", "Word to add")
+	posFlag := addCmd.String("pos", "", "Part of speech (noun, verb, adjective, etc.)")
+	definitionFlag := addCmd.String("definition", "", "Definition of the word")
+	exampleFlag := addCmd.String("example", "", "Example sentence using the word")
+
+	// Parse the arguments after "add"
+	if err := addCmd.Parse(os.Args[2:]); err != nil {
+		return err
+	}
+
+	// Validate that all required flags are provided
+	if *wordFlag == "" || *posFlag == "" || *definitionFlag == "" || *exampleFlag == "" {
+		fmt.Println("❌ All flags (--word, --pos, --definition, --example) are required.")
+		fmt.Println("Example: vocab add --word=serendipity --pos=noun --definition=\"the occurrence of events by chance in a happy or beneficial way\" --example=\"I found a $20 bill on the street, what a serendipity!\"")
+		fmt.Println("Use 'vocab help' to see available commands.")
+		return nil
+	}
+
+	// Here you have the values as strings
+	word := *wordFlag
+	pos := *posFlag
+	definition := *definitionFlag
+	example := *exampleFlag
+
+	fmt.Printf("Adding word: %s\nPart of speech: %s\nDefinition: %s\nExample: %s\n", word, pos, definition, example)
+
+	// TODO: Add the word to vocabulary storage
+	// You would call something like:
+	// return addWordToVocab(word, pos, definition, example)
+
+	return nil
+}
+
 func printUsage() {
 	fmt.Println(`
 📚 Vocabulary Study CLI
@@ -147,7 +177,7 @@ Usage:
   vocab [flags]
   vocab stats	Show study statistics
   vocab reset	Reset all progress
-  vocab add --word=<word> --pos=<part-of-speech> --definition="<definition>"   	Add a new word to the vocabulary
+  vocab add --word=<word> --pos=<part-of-speech> --definition="<definition>" --example="<example>"   	Add a new word to the vocabulary
   vocab help	Show this help message
 
 Flags:
@@ -159,6 +189,6 @@ Examples:
   vocab --limit 20
   vocab --review=unknown
   vocab stats
-  vocab add --word=serendipity --pos=noun --definition="the occurrence of events by chance in a happy or beneficial way"
+  vocab add --word=serendipity --pos=noun --definition="the occurrence of events by chance in a happy or beneficial way" --example="I found a $20 bill on the street, what a serendipity!"
 		`)
 }
