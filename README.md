@@ -27,10 +27,16 @@ A command-line interface (CLI) tool built with Go to help you study and learn ne
     ```
 4.  **Build the application**:
 
-    Run the following command to build the executable file `vocab-cli`:
+    Run the following command to build the executable file `vocab`:
 
     ```bash
     make build
+    ```
+
+    To clean up the executable file, run:
+
+    ```bash
+    make clean
     ```
 
 ## Usage
@@ -40,7 +46,7 @@ A command-line interface (CLI) tool built with Go to help you study and learn ne
 To start a flashcard session, simply run the executable:
 
 ```bash
-./vocab-cli
+./vocab
 ```
 
 The application will display a word, and you can press `Enter` to reveal the definition. Then, you'll be prompted to mark the word as "known" or "unknown".
@@ -50,7 +56,7 @@ The application will display a word, and you can press `Enter` to reveal the def
 You can limit the number of words in a study session using the `--limit` flag:
 
 ```bash
-./vocab-cli --limit=10
+./vocab --limit=10
 ```
 
 This will start a session with a maximum of 10 words.
@@ -60,7 +66,7 @@ This will start a session with a maximum of 10 words.
 You can filter the words in a study session based on their status using the `--review` flag. The available modes are `all`, `unknown`, and `unseen`.
 
 ```bash
-./vocab-cli --review=unknown
+./vocab --review=unknown
 ```
 
 This will start a session with only the words you have previously marked as "unknown".
@@ -70,7 +76,7 @@ This will start a session with only the words you have previously marked as "unk
 To see the help message with all available commands and flags, use the `--help` flag:
 
 ```bash
-./vocab-cli --help
+./vocab --help
 ```
 
 ### View Statistics
@@ -78,7 +84,7 @@ To see the help message with all available commands and flags, use the `--help` 
 To see your current progress, use the `stats` command:
 
 ```bash
-./vocab-cli stats
+./vocab stats
 ```
 
 This will show you the total number of words, how many you know, how many you don't, and how many you haven't seen yet.
@@ -88,10 +94,26 @@ This will show you the total number of words, how many you know, how many you do
 To reset all your progress and start over, use the `reset` command:
 
 ```bash
-./vocab-cli reset
+./vocab reset
 ```
 
 You will be asked for confirmation before your progress is erased.
+
+### Add New Words
+
+To add new words to your vocabulary, use the `add` command:
+
+```bash
+./vocab add --word=<word> --pos=<part-of-speech> --definition="<definition>"
+```
+
+Example:
+
+```bash
+./vocab add --word=serendipity --pos=noun --definition="the occurrence of events by chance in a happy or beneficial way"
+```
+
+This will add the new word to your vocabulary file and make it available in future study sessions.
 
 ## Configuration
 

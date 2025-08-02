@@ -22,6 +22,15 @@ func Run() error {
 		case "help":
 			printUsage()
 			return nil
+		case "add":
+			if len(os.Args) != 5 {
+				fmt.Println("❌ Usage: vocab add --word=<word> --pos=<part-of-speech> --definition=\"<definition>\"")
+				fmt.Println("Example: vocab add --word=serendipity --pos=noun --definition=\"the occurrence of events by chance in a happy or beneficial way\"")
+				fmt.Println("Use 'vocab help' to see available commands.")
+				return nil
+			}
+			fmt.Println("correct usage test")
+			return nil
 		default:
 			fmt.Printf("❌ Unknown command: %s\n", arg)
 			fmt.Println("Use 'vocab help' to see available commands.")
@@ -136,9 +145,10 @@ func printUsage() {
 
 Usage:
   vocab [flags]
-  vocab stats         Show study statistics
-  vocab reset         Reset all progress
-  vocab help          Show this help message
+  vocab stats	Show study statistics
+  vocab reset	Reset all progress
+  vocab add --word=<word> --pos=<part-of-speech> --definition="<definition>"   	Add a new word to the vocabulary
+  vocab help	Show this help message
 
 Flags:
   --limit N           Limit number of flashcards shown in one session
@@ -148,5 +158,7 @@ Flags:
 Examples:
   vocab --limit 20
   vocab --review=unknown
-  vocab stats`)
+  vocab stats
+  vocab add --word=serendipity --pos=noun --definition="the occurrence of events by chance in a happy or beneficial way"
+		`)
 }

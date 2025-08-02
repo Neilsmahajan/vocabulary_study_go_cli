@@ -2,6 +2,7 @@
 progress.json
 # Ignore built binaries
 vocab-cli
+vocab
 *.exe
 *.out
 *.bin

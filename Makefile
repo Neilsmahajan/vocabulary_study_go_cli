@@ -1,2 +1,5 @@
 build:
-	go build -o vocab-cli ./cmd/main.go
+	go build -o vocab ./cmd/main.go
+
+clean:
+	rm -f vocab
