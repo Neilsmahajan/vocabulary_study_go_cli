@@ -115,6 +115,22 @@ Example:
 
 This will add the new word to your vocabulary file and make it available in future study sessions.
 
+### Remove Words
+
+To remove words from your vocabulary, use the `remove` command:
+
+```bash
+./vocab remove --word=<word>
+```
+
+Example:
+
+```bash
+./vocab remove --word=précis
+```
+
+This will remove the specified word from your vocabulary file.
+
 ## Configuration
 
 The vocabulary words are stored in the `vocab.json` file. You can edit this file to add, remove, or modify words. The format for each word is as follows:

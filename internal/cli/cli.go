@@ -24,6 +24,8 @@ func Run() error {
 			return nil
 		case "add":
 			return handleAddCommand()
+		case "remove":
+			return handleRemoveCommand()
 		default:
 			fmt.Printf("❌ Unknown command: %s\n", arg)
 			fmt.Println("Use './vocab help' to see available commands.")
@@ -133,7 +135,6 @@ func resetProgress() error {
 }
 
 func handleAddCommand() error {
-	// Create a new flag set for the add subcommand
 	addCmd := flag.NewFlagSet("add", flag.ExitOnError)
 
 	wordFlag := addCmd.String("word", "", "Word to add")
@@ -141,12 +142,10 @@ func handleAddCommand() error {
 	definitionFlag := addCmd.String("definition", "", "Definition of the word")
 	exampleFlag := addCmd.String("example", "", "Example sentence using the word")
 
-	// Parse the arguments after "add"
 	if err := addCmd.Parse(os.Args[2:]); err != nil {
 		return err
 	}
 
-	// Validate that all required flags are provided
 	if *wordFlag == "" || *posFlag == "" || *definitionFlag == "" || *exampleFlag == "" {
 		fmt.Println("❌ All flags (--word, --pos, --definition, --example) are required.")
 		fmt.Println("Example: ./vocab add --word=précis --pos=noun --definition=\"a summary or abstract of a text or speech\" --example=\"You can read a brief precis of what he found by clicking here.\"")
@@ -154,7 +153,6 @@ func handleAddCommand() error {
 		return nil
 	}
 
-	// Here you have the values as strings
 	word := *wordFlag
 	pos := *posFlag
 	definition := *definitionFlag
@@ -162,13 +160,36 @@ func handleAddCommand() error {
 
 	fmt.Printf("Adding word: %s\nPart of speech: %s\nDefinition: %s\nExample: %s\n", word, pos, definition, example)
 
-	// TODO: Add the word to vocabulary storage
-	// You would call something like:
-	// return addWordToVocab(word, pos, definition, example)
 	if err := storage.AddWord("vocab.json", word, pos, definition, example); err != nil {
 		return fmt.Errorf("failed to add word: %w", err)
 	}
 
+	return nil
+}
+
+func handleRemoveCommand() error {
+	removeCmd := flag.NewFlagSet("remove", flag.ExitOnError)
+
+	wordFlag := removeCmd.String("word", "", "Word to remove")
+
+	if err := removeCmd.Parse(os.Args[2:]); err != nil {
+		return err
+	}
+
+	if *wordFlag == "" {
+		fmt.Println("❌ The --word flag is required to remove a word.")
+		fmt.Println("Example: ./vocab remove --word=précis")
+		fmt.Println("Use './vocab help' to see available commands.")
+		return nil
+	}
+
+	word := *wordFlag
+
+	fmt.Printf("Removing word: %s\n", word)
+
+	if err := storage.RemoveWord("vocab.json", word); err != nil {
+		return fmt.Errorf("failed to remove word: %w", err)
+	}
 	return nil
 }
 
@@ -181,6 +202,7 @@ Usage:
   ./vocab stats	Show study statistics
   ./vocab reset	Reset all progress
   ./vocab add --word=<word> --pos=<part-of-speech> --definition="<definition>" --example="<example>"   	Add a new word to the vocabulary
+  ./vocab remove --word=<word>	Remove a word from the vocabulary
   ./vocab help	Show this help message
 
 Flags:
@@ -191,7 +213,9 @@ Flags:
 Examples:
   ./vocab --limit 20
   ./vocab --review=unknown
+  ./vocab reset
   ./vocab stats
   ./vocab add --word=précis --pos=noun --definition="a summary or abstract of a text or speech" --example="You can read a brief precis of what he found by clicking here."
+  ./vocab remove --word=précis
 		`)
 }
