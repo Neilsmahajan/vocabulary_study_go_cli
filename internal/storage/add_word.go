@@ -41,7 +41,7 @@ func saveVocab(path, word string, entry VocabEntry) error {
 		return fmt.Errorf("failed to read vocab file: %w", err)
 	}
 	var vocab map[string]VocabEntry
-	if err := json.Unmarshal(fileData, &vocab); err != nil {
+	if err = json.Unmarshal(fileData, &vocab); err != nil {
 		return fmt.Errorf("failed to unmarshal vocab data: %w", err)
 	}
 	vocab[word] = entry
