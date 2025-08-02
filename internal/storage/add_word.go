@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+
+	"github.com/neilsmahajan/vocabulary_study_go_cli/internal/colors"
 )
 
 func AddWord(path, word, pos, definition, example string) error {
@@ -25,7 +27,7 @@ func AddWord(path, word, pos, definition, example string) error {
 	if err := saveVocab(path, word, vocab[word]); err != nil {
 		return fmt.Errorf("error saving vocab: %w", err)
 	}
-	fmt.Printf("✅ Added word '%s' to vocab\n", word)
+	fmt.Println(colors.Success(fmt.Sprintf("Added word '%s' to vocab", word)))
 	return nil
 }
 
@@ -52,6 +54,6 @@ func saveVocab(path, word string, entry VocabEntry) error {
 	if err := os.WriteFile(path, fileData, 0644); err != nil {
 		return fmt.Errorf("failed to write vocab data to file: %w", err)
 	}
-	fmt.Printf("Saving vocab word %s to %s: %+v\n", word, path, entry)
+	fmt.Printf("%s\n", colors.Dim(fmt.Sprintf("Saving vocab word %s to %s", word, path)))
 	return nil
 }

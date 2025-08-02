@@ -6,6 +6,7 @@ import (
 	"os"
 	"strings"
 
+	"github.com/neilsmahajan/vocabulary_study_go_cli/internal/colors"
 	"github.com/neilsmahajan/vocabulary_study_go_cli/internal/flashcard"
 	"github.com/neilsmahajan/vocabulary_study_go_cli/internal/storage"
 )
@@ -27,8 +28,8 @@ func Run() error {
 		case "remove":
 			return handleRemoveCommand()
 		default:
-			fmt.Printf("❌ Unknown command: %s\n", arg)
-			fmt.Println("Use './vocab help' to see available commands.")
+			fmt.Printf("%s\n", colors.Error(fmt.Sprintf("Unknown command: %s", arg)))
+			fmt.Println(colors.Info("Use './vocab help' to see available commands."))
 			return nil
 		}
 	}
@@ -47,7 +48,7 @@ func Run() error {
 
 	// Validate review mode
 	if *review != "all" && *review != "unknown" && *review != "unseen" {
-		fmt.Println("❌ Invalid value for --review. Use: all, unknown, or unseen")
+		fmt.Println(colors.Error("Invalid value for --review. Use: all, unknown, or unseen"))
 		printUsage()
 		return nil
 	}
@@ -101,21 +102,41 @@ func showStats() error {
 	}
 	unseen := total - known - unknown
 
-	fmt.Printf("\n📊 Vocabulary Stats:\n")
-	fmt.Printf("Total words: %d\n", total)
-	fmt.Printf("Known: %d\n", known)
-	fmt.Printf("Unknown: %d\n", unknown)
-	fmt.Printf("Unseen: %d\n", unseen)
+	fmt.Printf("\n%s\n", colors.Stats("Vocabulary Stats"))
+	fmt.Println(colors.Separator())
+	fmt.Printf("%s %s\n", colors.Dim("Total words:"), colors.BrightWhite(fmt.Sprintf("%d", total)))
+	fmt.Printf("%s %s\n", colors.Dim("Known:"), colors.BrightGreen(fmt.Sprintf("%d", known)))
+	fmt.Printf("%s %s\n", colors.Dim("Unknown:"), colors.BrightRed(fmt.Sprintf("%d", unknown)))
+	fmt.Printf("%s %s\n", colors.Dim("Unseen:"), colors.BrightYellow(fmt.Sprintf("%d", unseen)))
+
 	if total == 0 {
-		fmt.Println("No words in vocabulary.")
+		fmt.Printf("\n%s\n", colors.Warning("No words in vocabulary."))
+	} else {
+		percentage := float64(known) / float64(total) * 100
+		progressBar := generateProgressBar(percentage, 20)
+		fmt.Printf("\n%s %.1f%% %s\n", colors.Info("Progress:"), percentage, progressBar)
 	}
+	fmt.Println()
 	return nil
+}
+
+func generateProgressBar(percentage float64, width int) string {
+	filled := int(percentage / 100 * float64(width))
+	bar := ""
+	for i := 0; i < width; i++ {
+		if i < filled {
+			bar += colors.BrightGreen("█")
+		} else {
+			bar += colors.Dim("░")
+		}
+	}
+	return fmt.Sprintf("[%s]", bar)
 }
 
 func resetProgress() error {
 	const progressPath = "progress.json"
 
-	fmt.Print("⚠️ Are you sure you want to reset your progress? [y/N]: ")
+	fmt.Print(colors.Warning("Are you sure you want to reset your progress? [y/N]: "))
 	var response string
 	if _, err := fmt.Scanln(&response); err != nil {
 		// Handle empty input or scan errors gracefully
@@ -123,14 +144,14 @@ func resetProgress() error {
 	}
 
 	if strings.ToLower(response) != "y" {
-		fmt.Println("❎ Reset canceled.")
+		fmt.Println(colors.Info("Reset canceled."))
 		return nil
 	}
 	err := storage.SaveProgress(progressPath, map[string]string{})
 	if err != nil {
 		return fmt.Errorf("failed to reset progress: %w", err)
 	}
-	fmt.Println("✅ Progress has been reset.")
+	fmt.Println(colors.Success("Progress has been reset."))
 	return nil
 }
 
@@ -147,9 +168,9 @@ func handleAddCommand() error {
 	}
 
 	if *wordFlag == "" || *posFlag == "" || *definitionFlag == "" || *exampleFlag == "" {
-		fmt.Println("❌ All flags (--word, --pos, --definition, --example) are required.")
-		fmt.Println("Example: ./vocab add --word=précis --pos=noun --definition=\"a summary or abstract of a text or speech\" --example=\"You can read a brief precis of what he found by clicking here.\"")
-		fmt.Println("Use './vocab help' to see available commands.")
+		fmt.Println(colors.Error("All flags (--word, --pos, --definition, --example) are required."))
+		fmt.Printf("%s %s\n", colors.Dim("Example:"), colors.Cyan("./vocab add --word=précis --pos=noun --definition=\"a summary or abstract of a text or speech\" --example=\"You can read a brief precis of what he found by clicking here.\""))
+		fmt.Println(colors.Info("Use './vocab help' to see available commands."))
 		return nil
 	}
 
@@ -158,7 +179,13 @@ func handleAddCommand() error {
 	definition := *definitionFlag
 	example := *exampleFlag
 
-	fmt.Printf("Adding word: %s\nPart of speech: %s\nDefinition: %s\nExample: %s\n", word, pos, definition, example)
+	fmt.Printf("\n%s\n", colors.Header("Adding New Word"))
+	fmt.Println(colors.Separator())
+	fmt.Printf("%s %s\n", colors.Dim("Word:"), colors.BrightMagenta(word))
+	fmt.Printf("%s %s\n", colors.Dim("Part of speech:"), colors.Yellow(pos))
+	fmt.Printf("%s %s\n", colors.Dim("Definition:"), colors.BrightBlue(definition))
+	fmt.Printf("%s %s\n", colors.Dim("Example:"), colors.BrightGreen(example))
+	fmt.Println()
 
 	if err := storage.AddWord("vocab.json", word, pos, definition, example); err != nil {
 		return fmt.Errorf("failed to add word: %w", err)
@@ -177,15 +204,18 @@ func handleRemoveCommand() error {
 	}
 
 	if *wordFlag == "" {
-		fmt.Println("❌ The --word flag is required to remove a word.")
-		fmt.Println("Example: ./vocab remove --word=précis")
-		fmt.Println("Use './vocab help' to see available commands.")
+		fmt.Println(colors.Error("The --word flag is required to remove a word."))
+		fmt.Printf("%s %s\n", colors.Dim("Example:"), colors.Cyan("./vocab remove --word=précis"))
+		fmt.Println(colors.Info("Use './vocab help' to see available commands."))
 		return nil
 	}
 
 	word := *wordFlag
 
-	fmt.Printf("Removing word: %s\n", word)
+	fmt.Printf("\n%s\n", colors.Header("Removing Word"))
+	fmt.Println(colors.Separator())
+	fmt.Printf("%s %s\n", colors.Dim("Word to remove:"), colors.BrightRed(word))
+	fmt.Println()
 
 	if err := storage.RemoveWord("vocab.json", word); err != nil {
 		return fmt.Errorf("failed to remove word: %w", err)
@@ -194,28 +224,28 @@ func handleRemoveCommand() error {
 }
 
 func printUsage() {
-	fmt.Println(`
-📚 Vocabulary Study CLI
+	fmt.Printf("\n%s\n", colors.Header("Vocabulary Study CLI"))
+	fmt.Println(colors.Separator())
 
-Usage:
-  ./vocab [flags]
-  ./vocab stats	Show study statistics
-  ./vocab reset	Reset all progress
-  ./vocab add --word=<word> --pos=<part-of-speech> --definition="<definition>" --example="<example>"   	Add a new word to the vocabulary
-  ./vocab remove --word=<word>	Remove a word from the vocabulary
-  ./vocab help	Show this help message
+	fmt.Printf("\n%s\n", colors.Bold("Usage:"))
+	fmt.Printf("  %s\n", colors.Cyan("./vocab [flags]"))
+	fmt.Printf("  %s\t\t%s\n", colors.Cyan("./vocab stats"), colors.Dim("Show study statistics"))
+	fmt.Printf("  %s\t\t%s\n", colors.Cyan("./vocab reset"), colors.Dim("Reset all progress"))
+	fmt.Printf("  %s\t%s\n", colors.Cyan("./vocab add --word=<word> --pos=<part-of-speech> --definition=\"<definition>\" --example=\"<example>\""), colors.Dim("Add a new word"))
+	fmt.Printf("  %s\t%s\n", colors.Cyan("./vocab remove --word=<word>"), colors.Dim("Remove a word from vocabulary"))
+	fmt.Printf("  %s\t\t%s\n", colors.Cyan("./vocab help"), colors.Dim("Show this help message"))
 
-Flags:
-  --limit N           Limit number of flashcards shown in one session
-  --review MODE       Filter words to review: all, unknown, unseen (default: all)
-  --help              Show this help message
+	fmt.Printf("\n%s\n", colors.Bold("Flags:"))
+	fmt.Printf("  %s\t\t%s\n", colors.Yellow("--limit N"), colors.Dim("Limit number of flashcards shown in one session"))
+	fmt.Printf("  %s\t%s\n", colors.Yellow("--review MODE"), colors.Dim("Filter words to review: all, unknown, unseen (default: all)"))
+	fmt.Printf("  %s\t\t%s\n", colors.Yellow("--help"), colors.Dim("Show this help message"))
 
-Examples:
-  ./vocab --limit 20
-  ./vocab --review=unknown
-  ./vocab reset
-  ./vocab stats
-  ./vocab add --word=précis --pos=noun --definition="a summary or abstract of a text or speech" --example="You can read a brief precis of what he found by clicking here."
-  ./vocab remove --word=précis
-		`)
+	fmt.Printf("\n%s\n", colors.Bold("Examples:"))
+	fmt.Printf("  %s\n", colors.BrightGreen("./vocab --limit 20"))
+	fmt.Printf("  %s\n", colors.BrightGreen("./vocab --review=unknown"))
+	fmt.Printf("  %s\n", colors.BrightGreen("./vocab reset"))
+	fmt.Printf("  %s\n", colors.BrightGreen("./vocab stats"))
+	fmt.Printf("  %s\n", colors.BrightGreen("./vocab add --word=précis --pos=noun --definition=\"a summary or abstract\" --example=\"Read the précis.\""))
+	fmt.Printf("  %s\n", colors.BrightGreen("./vocab remove --word=précis"))
+	fmt.Println()
 }

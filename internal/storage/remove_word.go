@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+
+	"github.com/neilsmahajan/vocabulary_study_go_cli/internal/colors"
 )
 
 func RemoveWord(path, word string) error {
@@ -20,7 +22,7 @@ func RemoveWord(path, word string) error {
 	if err := delete(vocab, word, path); err != nil {
 		return fmt.Errorf("error deleting word '%s': %w", word, err)
 	}
-	fmt.Printf("✅ Removed word '%s' from vocab\n", word)
+	fmt.Println(colors.Success(fmt.Sprintf("Removed word '%s' from vocab", word)))
 	return nil
 }
 
@@ -43,6 +45,6 @@ func delete(vocab map[string]VocabEntry, word, path string) error {
 		return fmt.Errorf("error writing updated vocab to file: %w", err)
 	}
 
-	fmt.Printf("Deleting word %s from vocab\n", word)
+	fmt.Printf("%s\n", colors.Dim(fmt.Sprintf("Deleting word %s from vocab", word)))
 	return nil
 }

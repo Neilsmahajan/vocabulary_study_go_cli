@@ -8,6 +8,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/neilsmahajan/vocabulary_study_go_cli/internal/colors"
 	"github.com/neilsmahajan/vocabulary_study_go_cli/internal/storage"
 )
 
@@ -62,27 +63,36 @@ func (s *FlashcardSession) Run() error {
 	})
 
 	if len(words) == 0 {
-		fmt.Println("🎉 You've marked all the words as known. Great job!")
+		fmt.Println(colors.Celebration("You've marked all the words as known. Great job!"))
 		return nil
 	}
 
 	reader := bufio.NewReader(os.Stdin)
-	for _, word := range words {
+	fmt.Println(colors.Header("Vocabulary Study Session"))
+	fmt.Println(colors.Separator())
+
+	for i, word := range words {
 		entry := s.Vocab[word]
 
+		// Progress indicator
+		fmt.Printf("\n%s\n", colors.Dim(fmt.Sprintf("Card %d of %d", i+1, len(words))))
+
 		// Front of card
-		fmt.Printf("\n🔷 Word: %s\nPart of Speech: %s\n", word, entry.PartOfSpeech)
-		fmt.Print("Press [q]uit to exit or [Enter] to flip the card...")
+		fmt.Printf("\n%s\n", colors.WordDisplay(word))
+		fmt.Printf("  %s %s\n\n", colors.Dim("Part of Speech:"), colors.Yellow(entry.PartOfSpeech))
+		fmt.Print(colors.Prompt("Press [q]uit to exit or [Enter] to flip the card... "))
 		flipInput, _ := reader.ReadString('\n')
 		flipInput = strings.TrimSpace(strings.ToLower(flipInput))
 		if flipInput == "q" {
-			fmt.Println("👋 Exiting session. Your progress has been saved.")
+			fmt.Println(colors.Info("Exiting session. Your progress has been saved."))
 			return nil
 		}
+
 		// Back of the card
-		fmt.Printf("\n📖 Definition: %s\n", entry.Definition)
-		fmt.Printf("💬 Example: %s\n", entry.ExampleSentence)
-		fmt.Print("Did you know this word? [y]es / [n]o / [q]uit: ")
+		fmt.Println(colors.Separator())
+		fmt.Printf("  %s\n", colors.Definition(entry.Definition))
+		fmt.Printf("  %s\n\n", colors.Example(entry.ExampleSentence))
+		fmt.Print(colors.Prompt("Did you know this word? [y]es / [n]o / [q]uit: "))
 
 		input, _ := reader.ReadString('\n')
 		input = strings.TrimSpace(strings.ToLower(input))
@@ -90,15 +100,21 @@ func (s *FlashcardSession) Run() error {
 		switch input {
 		case "y":
 			s.Progress[word] = "known"
+			fmt.Println(colors.Success("Marked as known!"))
 		case "n":
 			s.Progress[word] = "unknown"
+			fmt.Println(colors.Warning("Marked for review."))
 		case "q":
-			fmt.Println("👋 Exiting session. Your progress has been saved.")
+			fmt.Println(colors.Info("Exiting session. Your progress has been saved."))
 			return nil
 		default:
-			fmt.Println("‼️ Invalid input. Skipping word.")
+			fmt.Println(colors.Error("Invalid input. Skipping word."))
+		}
+
+		if i < len(words)-1 {
+			fmt.Printf("\n%s\n", colors.Separator())
 		}
 	}
-	fmt.Println("\n✅ End of session! Progress saved.")
+	fmt.Printf("\n%s\n", colors.Success("End of session! Progress saved."))
 	return nil
 }
