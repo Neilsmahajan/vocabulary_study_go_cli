@@ -110,7 +110,7 @@ To add new words to your vocabulary, use the `add` command:
 Example:
 
 ```bash
-./vocab add --word=serendipity --pos=noun --definition="the occurrence of events by chance in a happy or beneficial way" --example="I found a $20 bill on the street, what a serendipity."
+./vocab add --word=précis --pos=noun --definition="a summary or abstract of a text or speech" --example="You can read a brief precis of what he found by clicking here."
 ```
 
 This will add the new word to your vocabulary file and make it available in future study sessions.

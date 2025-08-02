@@ -149,7 +149,7 @@ func handleAddCommand() error {
 	// Validate that all required flags are provided
 	if *wordFlag == "" || *posFlag == "" || *definitionFlag == "" || *exampleFlag == "" {
 		fmt.Println("❌ All flags (--word, --pos, --definition, --example) are required.")
-		fmt.Println("Example: ./vocab add --word=serendipity --pos=noun --definition=\"the occurrence of events by chance in a happy or beneficial way\" --example=\"I found a $20 bill on the street, what a serendipity.\"")
+		fmt.Println("Example: ./vocab add --word=précis --pos=noun --definition=\"a summary or abstract of a text or speech\" --example=\"You can read a brief precis of what he found by clicking here.\"")
 		fmt.Println("Use './vocab help' to see available commands.")
 		return nil
 	}
@@ -165,6 +165,9 @@ func handleAddCommand() error {
 	// TODO: Add the word to vocabulary storage
 	// You would call something like:
 	// return addWordToVocab(word, pos, definition, example)
+	if err := storage.AddWord("vocab.json", word, pos, definition, example); err != nil {
+		return fmt.Errorf("failed to add word: %w", err)
+	}
 
 	return nil
 }
@@ -189,6 +192,6 @@ Examples:
   ./vocab --limit 20
   ./vocab --review=unknown
   ./vocab stats
-  ./vocab add --word=serendipity --pos=noun --definition="the occurrence of events by chance in a happy or beneficial way" --example="I found a $20 bill on the street, what a serendipity."
+  ./vocab add --word=précis --pos=noun --definition="a summary or abstract of a text or speech" --example="You can read a brief precis of what he found by clicking here."
 		`)
 }
