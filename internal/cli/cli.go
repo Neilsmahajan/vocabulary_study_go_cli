@@ -26,7 +26,7 @@ func Run() error {
 			return handleAddCommand()
 		default:
 			fmt.Printf("❌ Unknown command: %s\n", arg)
-			fmt.Println("Use 'vocab help' to see available commands.")
+			fmt.Println("Use './vocab help' to see available commands.")
 			return nil
 		}
 	}
@@ -149,8 +149,8 @@ func handleAddCommand() error {
 	// Validate that all required flags are provided
 	if *wordFlag == "" || *posFlag == "" || *definitionFlag == "" || *exampleFlag == "" {
 		fmt.Println("❌ All flags (--word, --pos, --definition, --example) are required.")
-		fmt.Println("Example: vocab add --word=serendipity --pos=noun --definition=\"the occurrence of events by chance in a happy or beneficial way\" --example=\"I found a $20 bill on the street, what a serendipity!\"")
-		fmt.Println("Use 'vocab help' to see available commands.")
+		fmt.Println("Example: ./vocab add --word=serendipity --pos=noun --definition=\"the occurrence of events by chance in a happy or beneficial way\" --example=\"I found a $20 bill on the street, what a serendipity.\"")
+		fmt.Println("Use './vocab help' to see available commands.")
 		return nil
 	}
 
@@ -174,11 +174,11 @@ func printUsage() {
 📚 Vocabulary Study CLI
 
 Usage:
-  vocab [flags]
-  vocab stats	Show study statistics
-  vocab reset	Reset all progress
-  vocab add --word=<word> --pos=<part-of-speech> --definition="<definition>" --example="<example>"   	Add a new word to the vocabulary
-  vocab help	Show this help message
+  ./vocab [flags]
+  ./vocab stats	Show study statistics
+  ./vocab reset	Reset all progress
+  ./vocab add --word=<word> --pos=<part-of-speech> --definition="<definition>" --example="<example>"   	Add a new word to the vocabulary
+  ./vocab help	Show this help message
 
 Flags:
   --limit N           Limit number of flashcards shown in one session
@@ -186,9 +186,9 @@ Flags:
   --help              Show this help message
 
 Examples:
-  vocab --limit 20
-  vocab --review=unknown
-  vocab stats
-  vocab add --word=serendipity --pos=noun --definition="the occurrence of events by chance in a happy or beneficial way" --example="I found a $20 bill on the street, what a serendipity!"
+  ./vocab --limit 20
+  ./vocab --review=unknown
+  ./vocab stats
+  ./vocab add --word=serendipity --pos=noun --definition="the occurrence of events by chance in a happy or beneficial way" --example="I found a $20 bill on the street, what a serendipity."
 		`)
 }

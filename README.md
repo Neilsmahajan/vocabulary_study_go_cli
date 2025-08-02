@@ -104,13 +104,13 @@ You will be asked for confirmation before your progress is erased.
 To add new words to your vocabulary, use the `add` command:
 
 ```bash
-./vocab add --word=<word> --pos=<part-of-speech> --definition="<definition>"
+./vocab add --word=<word> --pos=<part-of-speech> --definition="<definition>" --example="<example>"
 ```
 
 Example:
 
 ```bash
-./vocab add --word=serendipity --pos=noun --definition="the occurrence of events by chance in a happy or beneficial way"
+./vocab add --word=serendipity --pos=noun --definition="the occurrence of events by chance in a happy or beneficial way" --example="I found a $20 bill on the street, what a serendipity."
 ```
 
 This will add the new word to your vocabulary file and make it available in future study sessions.
